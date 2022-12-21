@@ -1,2 +1,2 @@
 # pipeline-boilerplate
-PIPELINE SDK boilerplate for building Algorand apps with React and Chat GPT.
+PIPELINE SDK demos for building Algorand apps with React and Chat GPT.
