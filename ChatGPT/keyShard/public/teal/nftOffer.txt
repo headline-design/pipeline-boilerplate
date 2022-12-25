@@ -1,0 +1,60 @@
+#pragma version 5
+int contract {
+  // Address of the NFT owner
+  addr owner
+
+  // ID of the NFT
+  int nftId
+
+  // Current offer amount
+  int offerAmount
+
+  // Address of the current offer maker
+  addr offerMaker
+
+  // Flag indicating if the NFT is currently for sale
+  bool forSale
+
+  // Initializes the contract with the NFT owner and NFT ID
+  //
+  // @param _owner address of the NFT owner
+  // @param _nftId ID of the NFT
+  //
+  int init(addr _owner, int _nftId)
+    if (owner == 0)
+      owner = _owner
+      nftId = _nftId
+      forSale = false
+      return 1
+
+  // Makes an offer on the NFT
+  //
+  // @param _offerAmount offer amount
+  // @param _offerMaker address of the offer maker
+  //
+  int makeOffer(int _offerAmount, addr _offerMaker)
+    if (_offerAmount > 0 && !forSale)
+      offerAmount = _offerAmount
+      offerMaker = _offerMaker
+      forSale = true
+      return 1
+
+  // Accepts the current offer on the NFT
+  //
+  // @param _offerMaker address of the offer maker
+  //
+  int acceptOffer(addr _offerMaker)
+    if (_offerMaker == offerMaker && forSale)
+      // Transfer the NFT to the offer maker
+      transfer(offerMaker, nftId)
+
+      // Transfer the offer amount to the NFT owner
+      contract.call(offerMaker, "spend", offerAmount)
+
+      // Reset the offer details
+      offerAmount = 0
+      offerMaker = 0
+      forSale = false
+      return 1
+}
+
